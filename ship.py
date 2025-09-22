@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 
 class Ship(Sprite):
-    """Manage the player's ship (INCOMPLETE)."""
+    """Manage the player's ship."""
 
     def __init__(self, ai_game):
         super().__init__()
@@ -10,27 +10,30 @@ class Ship(Sprite):
         self.settings = ai_game.settings
         self.screen_rect = ai_game.screen.get_rect()
 
-        # TODO: load image later and compute rect
-        # self.image = pygame.image.load("ship.bmp")
-        # self.rect = self.image.get_rect()
+        # Expect ship.bmp in project folder
+        self.image = pygame.image.load("ship.bmp").convert()
+        self.image.set_colorkey((255, 255, 255))
+        self.rect = self.image.get_rect()
 
-        # Placeholder rect so file imports; will replace with image rect later
-        self.rect = pygame.Rect(0, 0, 60, 48)
+        # Start bottom center
         self.rect.midbottom = self.screen_rect.midbottom
 
+        # Store a decimal value for the ship's position
         self.x = float(self.rect.x)
+
+        # Movement flags
         self.moving_right = False
         self.moving_left = False
 
     def update(self):
-        """Update ship position (TODO: respect image width & speeds)."""
-        # TODO: use self.settings.ship_speed when dynamic settings exist
-        pass
+        if self.moving_right and self.rect.right < self.screen_rect.right:
+            self.x += self.settings.ship_speed
+        if self.moving_left and self.rect.left > 0:
+            self.x -= self.settings.ship_speed
+        self.rect.x = self.x
 
     def blitme(self):
-        """Draw ship (TODO: blit actual image)."""
-        # self.screen.blit(self.image, self.rect)
-        pygame.draw.rect(self.screen, (0, 0, 255), self.rect)
+        self.screen.blit(self.image, self.rect)
 
     def center_ship(self):
         self.rect.midbottom = self.screen_rect.midbottom
